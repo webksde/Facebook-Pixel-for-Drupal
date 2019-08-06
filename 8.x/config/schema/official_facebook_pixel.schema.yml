@@ -1,0 +1,49 @@
+# Schema for the configuration files of the facebook_pixel module.
+official_facebook_pixel.settings:
+  type: config_object
+  label: 'Official Facebook Pixel settings'
+  mapping:
+    pixel_id:
+      type: string
+      label: 'Facebook pixel ID'
+    pii_id:
+      type: integer
+      label: 'Use Advanced Matching on pixel?'
+    visibility:
+      type: mapping
+      label: 'Visibility'
+      mapping:
+        request_path_mode:
+          type: integer
+          label: 'Add tracking to specific pages'
+        request_path_pages:
+          type: string
+          label: 'Pages by their paths'
+        user_role_mode:
+          type: integer
+          label: 'Add tracking for specific roles'
+        user_role_roles:
+          type: sequence
+          label: 'Roles'
+          sequence:
+            type: string
+            label: 'Role'
+    privacy:
+      type: mapping
+      label: 'Privacy'
+      mapping:
+        donottrack:
+          type: boolean
+          label: 'Universal web tracking opt-out'
+        fb_optout:
+          type: boolean
+          label: 'Advanced fb-disable user opt-out'
+        eu_cookie_compliance:
+          type: boolean
+          label: 'EU Cookie Compliance integration'
+        disable_noscript_img:
+          type: boolean
+          label: 'Disable noscript img fallback'
+        fb_optout_key:
+          type: string
+          label: 'The technical opt-out key'

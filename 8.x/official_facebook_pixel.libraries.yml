@@ -1,0 +1,15 @@
+admin:
+  version: VERSION
+  js:
+    js/official_facebook_pixel.admin.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+official_facebook_pixel:
+  version: VERSION
+  js:
+    js/official_facebook_pixel.js: {}
+  dependencies:
+    - core/drupalSettings
+    - core/jquery
+    - core/drupal

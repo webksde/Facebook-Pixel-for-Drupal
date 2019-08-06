@@ -4,5 +4,5 @@ official_facebook_pixel.admin:
   title: 'Official Facebook Pixel'
   route_name: official_facebook_pixel.settings_form
   description: 'Official Facebook Pixel Settings'
-  parent: system.admin_config_system
+  parent: system.admin_config_search
   weight: 100
