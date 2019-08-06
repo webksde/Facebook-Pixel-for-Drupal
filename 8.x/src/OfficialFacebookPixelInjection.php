@@ -61,7 +61,7 @@ class OfficialFacebookPixelInjection
       'pixel_id' => $options->getPixelId(),
       'privacy_donottrack' => $config->get('privacy.donottrack'),
       'privacy_fb_optout' => $config->get('privacy.fb_optout'),
-      'privacy_fb_optout' => $config->get('privacy.fb_optout_key'),
+      'privacy_fb_optout_key' => $config->get('privacy.fb_optout_key'),
       'privacy_eu_cookie_compliance' => $config->get('privacy.eu_cookie_compliance') && \Drupal::service('module_handler')->moduleExists('eu_cookie_compliance'),
       'events' => $eventsArray,
     ];

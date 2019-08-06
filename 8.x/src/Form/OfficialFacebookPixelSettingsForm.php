@@ -210,7 +210,7 @@ class OfficialFacebookPixelSettingsForm extends ConfigFormBase {
     ];
     $form['tracking']['privacy']['official_facebook_pixel_fb_optout'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Advanced fb-disable user opt-out'),
+      '#title' => $this->t('Enable \'fb-disable\' JavaScript Opt-Out (fbOptout())'),
       '#description' => $this->t('If enabled, for enhanced privacy if Facebook Pixel user opt-out code "<i>window[\'fb-disable\']</i>" is true, the Facebook pixel module will not execute the Facebook Pixel tracking code on your site. Furthermore provides the global JavaScript function "fbOptout()" to set an opt-out cookie if called.'),
       '#default_value' => $config->get('privacy.fb_optout'),
     ];
@@ -224,7 +224,7 @@ class OfficialFacebookPixelSettingsForm extends ConfigFormBase {
     $form['tracking']['privacy']['official_facebook_pixel_disable_noscript_img'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Disable noscript fallback tracking pixel'),
-      '#description' => $this->t('Disable the &lt;noscript&gt; tracking pixel image, which does not respect any of these privacy features.'),
+      '#description' => $this->t('Disable the &lt;noscript&gt; tracking pixel image, which does not respect any of these privacy settings.'),
       '#default_value' => $config->get('privacy.disable_noscript_img'),
     ];
 
