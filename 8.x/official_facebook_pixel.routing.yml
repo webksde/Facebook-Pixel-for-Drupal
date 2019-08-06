@@ -6,6 +6,6 @@ official_facebook_pixel.settings_form:
     _form: '\Drupal\official_facebook_pixel\Form\OfficialFacebookPixelSettingsForm'
     _title: 'Official Facebook Pixel Settings'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer official_facebook_pixel'
   options:
     _admin_route: TRUE

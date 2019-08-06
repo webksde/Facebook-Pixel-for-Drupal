@@ -1,0 +1,21 @@
+<?php
+
+use Drupal\official_facebook_pixel\OfficialFacebookPixelConfig;
+
+/**
+ * Set defaults for the new setting form elements.
+ */
+function official_facebook_pixel_update_8000() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable(OfficialFacebookPixelConfig::CONFIG_NAME);
+  $config->set('visibilit.request_path_mode', 0)
+  ->set('visibility.request_path_pages', "/admin\n/admin/*\n/batch\n/node/add*\n/node/*/*\n/user/*/*\n/user/login")
+  ->set('visibility.user_role_mode', 1)
+  ->set('visibility.user_role_roles', ['administrator' => 'administrator'])
+  ->set('privacy.donottrack', true)
+  ->set('privacy.fb_optout', true)
+  ->set('privacy.fb_optout_key', 'fb-disable')
+  ->set('privacy.eu_cookie_compliance', false)
+  ->set('privacy.disable_noscript_img', false)
+  ->save(TRUE);
+}

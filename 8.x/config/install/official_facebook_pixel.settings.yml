@@ -1,4 +1,16 @@
 # Copyright (C) 2018 Facebook Pixel
 # This file is distributed under the same license as the Facebook Pixel package.
-pixel_id: '{pixel_id}'
-pii_id: 1
+pixel_id: ''
+pii_id: 0
+visibility:
+  request_path_mode: 0
+  request_path_pages: "/admin\n/admin/*\n/batch\n/node/add*\n/node/*/*\n/user/*/*\n/user/login"
+  user_role_mode: 1
+  user_role_roles:
+    administrator: administrator
+privacy:
+  donottrack: true
+  fb_optout: true
+  eu_cookie_compliance: false
+  disable_noscript_img: false
+  fb_optout_key: 'fb-disable'

@@ -20,23 +20,121 @@
 use Drupal\official_facebook_pixel\OfficialFacebookPixelInjection;
 use Drupal\official_facebook_pixel\OfficialFacebookPixelOptions;
 use Drupal\official_facebook_pixel\OfficialFacebookPixelUtils;
-use Drupal\official_facebook_pixel\PixelScriptBuilder;
+use Drupal\official_facebook_pixel\OfficialFacebookPixelConfig;
 
 /**
  * Implements hook_page_attachments().
  */
 function official_facebook_pixel_page_attachments(array &$page) {
-  // Return if user is admin
-  $roles = \Drupal::currentUser()->getRoles();
-  if (is_array($roles) && in_array("administrator", $roles)) {
+  $account = \Drupal::currentUser();
+  if(!_official_facebook_pixel_visibility_pages() || !_official_facebook_pixel_visibility_roles($account)){
+    // No tracking if page or user role should not be tracked.
     return;
   }
-
   $options = OfficialFacebookPixelOptions::getInstance();
   // Return if pixel_id is not positive integer
   if (!OfficialFacebookPixelUtils::isPositiveInteger($options->getPixelId())) {
     return;
   }
-
   OfficialFacebookPixelInjection::injectPixelCode($page);
+}
+
+/**
+ * Implements hook_page_bottom().
+ */
+function official_facebook_pixel_page_bottom(array &$page_bottom) {
+  $account = \Drupal::currentUser();
+  if(!_official_facebook_pixel_visibility_pages() || !_official_facebook_pixel_visibility_roles($account)){
+    // No tracking if page or user role should not be tracked.
+    return;
+  }
+  $config = \Drupal::config(OfficialFacebookPixelConfig::CONFIG_NAME);
+  if ($config->get('privacy.disable_noscript_img')) {
+    // Do no add the script img fallback if it is disabled due to privacy settings.
+    return;
+  }
+  OfficialFacebookPixelInjection::injectNoScriptCode($page_bottom);
+}
+
+
+/**
+ * Tracking visibility check for user roles.
+ *
+ * Based on visibility setting this function returns TRUE if JS code should
+ * be added for the current role and otherwise FALSE.
+ *
+ * @param object $account
+ *   A user object containing an array of roles to check.
+ *
+ * @return bool
+ *   TRUE if JS code should be added for the current role and otherwise FALSE.
+ */
+function _official_facebook_pixel_visibility_roles($account) {
+  $config = \Drupal::config(OfficialFacebookPixelConfig::CONFIG_NAME);
+  $enabled = $visibility_user_role_mode = $config->get('visibility.user_role_mode');
+  $visibility_user_role_roles = $config->get('visibility.user_role_roles') ? $config->get('visibility.user_role_roles') : [];
+
+  if (count($visibility_user_role_roles) > 0) {
+    // One or more roles are selected.
+    foreach (array_values($account->getRoles()) as $user_role) {
+      // Is the current user a member of one of these roles?
+      if (in_array($user_role, $visibility_user_role_roles)) {
+        // Current user is a member of a role that should be tracked/excluded
+        // from tracking.
+        $enabled = !$visibility_user_role_mode;
+        break;
+      }
+    }
+  }
+  else {
+    // No role is selected for tracking, therefore all roles should be tracked.
+    $enabled = TRUE;
+  }
+
+  return $enabled;
+}
+
+/**
+ * Tracking visibility check for pages.
+ *
+ * Based on visibility setting this function returns TRUE if JS code should
+ * be added to the current page and otherwise FALSE.
+ */
+function _official_facebook_pixel_visibility_pages() {
+  static $page_match;
+
+  // Cache visibility result if function is called more than once.
+  if (!isset($page_match)) {
+    $config = \Drupal::config(OfficialFacebookPixelConfig::CONFIG_NAME);
+    $visibility_request_path_mode = $config->get('visibility.request_path_mode');
+    $visibility_request_path_pages = $config->get('visibility.request_path_pages');
+
+    // Match path if necessary.
+    if (!empty($visibility_request_path_pages)) {
+      // Convert path to lowercase. This allows comparison of the same path
+      // with different case. Ex: /Page, /page, /PAGE.
+      $pages = mb_strtolower($visibility_request_path_pages);
+      if ($visibility_request_path_mode < 2) {
+        // Compare the lowercase path alias (if any) and internal path.
+        $path = \Drupal::service('path.current')->getPath();
+        $path_alias = mb_strtolower(\Drupal::service('path.alias_manager')->getAliasByPath($path));
+        $page_match = \Drupal::service('path.matcher')->matchPath($path_alias, $pages) || (($path != $path_alias) && \Drupal::service('path.matcher')->matchPath($path, $pages));
+        // When $visibility_request_path_mode has a value of 0, the tracking
+        // code is displayed on all pages except those listed in $pages. When
+        // set to 1, it is displayed only on those pages listed in $pages.
+        $page_match = !($visibility_request_path_mode xor $page_match);
+      }
+      elseif (\Drupal::moduleHandler()->moduleExists('php')) {
+        $page_match = php_eval($visibility_request_path_pages);
+      }
+      else {
+        $page_match = FALSE;
+      }
+    }
+    else {
+      $page_match = TRUE;
+    }
+
+  }
+  return $page_match;
 }

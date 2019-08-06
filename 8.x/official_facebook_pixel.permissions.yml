@@ -1,0 +1,7 @@
+administer official_facebook_pixel:
+  title: 'Administer official Facebook Pixel'
+  description: 'Define general settings for the official Facebook Pixel.'
+use PHP for official_facebook_pixel tracking visibility:
+  title: 'Use PHP for tracking visibility'
+  description: 'Enter PHP code in the field for tracking visibility settings.'
+  restrict access: true

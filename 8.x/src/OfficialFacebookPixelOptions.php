@@ -77,7 +77,7 @@ class OfficialFacebookPixelOptions {
   public function setUserInfo() {
     $user = \Drupal::currentUser();
     $use_pii = $this->getUsePii();
-    if (0 === $user->id() || $use_pii !== 1) {
+    if (0 === $user->id() || $use_pii != 1) {
       // User not logged in or admin chose not to send PII.
       $this->userInfo = array();
     } else {
